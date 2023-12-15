@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="mb-5">{{ title }}</h1>
+    <div>
+        <div class="d-flex">
+            {% if sort_list %}
+                <div class="me-4">
+                    <h4>Сортировка по: </h4>
+                </div>
+                {% for sort in sort_list %}
+                    <p>{{ sort.list }}</p>
+                    <div class="me-4">
+                        <a class="text-decoration-none p-3 border border-black rounded-1"
+                           href="?orderby={{ sort.value }}">{{ sort.name }}</a>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+    {% for book in books %}
+        <div class="bg-light border-dark border rounded-1 p-3 m-3">
+            <div class="d-flex justify-content-between">
+                <a href="{{ book.get_absolute_url }}" class="text-decoration-none">
+                    <h4 class="field-name">{{ book.title }}</h4>
+                </a>
+                <div class="m-1">
+                    {% with book.authors.all as authors %}
+                        {% for author in authors %}
+                            <a href="{{ author.get_absolute_url }}" class="text-decoration-none">
+                                <p class="field-name">{{ author.name }}</p>
+                            </a>
+                        {% endfor %}
+                    {% endwith %}
+                </div>
+            </div>
+            <p class="field-name">{{ book.description|truncatewords:50 }}</p>
+        </div>
+    {% endfor %}
+    {% if favorite and not user.profile.favorite_books.count %}
+        <h5>Вы пока не добавили ни одной книги в избранное :(</h5>
+    {% endif %}
+{% endblock %}

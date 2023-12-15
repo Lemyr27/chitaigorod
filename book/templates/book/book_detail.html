@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="d-flex justify-content-between">
+        <h1 class="mb-5">{{ title }}</h1>
+        <div class="mt-5 me-5">
+            <form method="post">
+                {% csrf_token %}
+                <input type="submit"
+                       class="border border-black rounded-1 p-2 ms-3 text-decoration-none bg-warning text-black"
+                       name="download" value="Скачать книгу">
+            </form>
+        </div>
+    </div>
+    <div class="bg-light border-dark border rounded-1 p-3 m-3">
+        <div class="d-flex justify-content-between">
+            <div class="m-1">
+                {% with book.authors.all as authors %}
+                    <h4>Авторы:</h4>
+                    <ul class="list-group-horizontal">
+                        {% for author in authors %}
+                            <li class="list-group-item fs-5"><a href="{{ author.get_absolute_url }}"
+                                                                class="text-decoration-none">{{ author.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endwith %}
+            </div>
+            <div class="m-1">
+                <p class="h5">Издательство: </p>
+                <p class="text-danger h5">{{ book.publisher }}</p>
+            </div>
+            <div class="m-1">
+                {% with book.languages.all as languages %}
+                    <h4>Языки издания:</h4>
+                    <ul class="list-group-horizontal">
+                        {% for language in languages %}
+                            <p class="text-danger h5">{{ language.name }}</p>
+                        {% endfor %}
+                    </ul>
+                {% endwith %}
+            </div>
+            <div class="m-1">
+                <p class="h5">Жанр произведения:</p>
+                <p class="text-danger h5">{{ book.genre }}</p>
+            </div>
+            <div class="m-1">
+                <p class="h5">Год публикации:</p>
+                <p class="text-danger h5">{{ book.year_published }}</p>
+            </div>
+            <div class="m-1">
+                <p class="h5">ISBN:</p>
+                <p class="text-danger h5">{{ book.isbn }}</p>
+            </div>
+        </div>
+        <hr>
+        <p class="fs-5">{{ book.description }}</p>
+    </div>
+    {% if user.is_authenticated %}
+            <form method="post" class="d-flex justify-content-between">
+                {% csrf_token %}
+                {% with user.profile.favorite_books.all as fav %}
+                    <button type="submit" name="favorite"
+                            value="{% if book in fav %}0{% else %}1{% endif %}"
+                            class="d-flex align-items-md-center border-0 bg-body">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="60" fill="currentColor"
+                             class="{% if book in fav %}text-warning{% endif %} bi bi-star "
+                             viewBox="0 0 16 16">
+                            <path d="M2.866 14.85c-.078.444.36.791.746.593l4.39-2.256 4.389 2.256c.386.198.824-.149.746-.592l-.83-4.73 3.522-3.356c.33-.314.16-.888-.282-.95l-4.898-.696L8.465.792a.513.513 0 0 0-.927 0L5.354 5.12l-4.898.696c-.441.062-.612.636-.283.95l3.523 3.356-.83 4.73zm4.905-2.767-3.686 1.894.694-3.957a.565.565 0 0 0-.163-.505L1.71 6.745l4.052-.576a.525.525 0 0 0 .393-.288L8 2.223l1.847 3.658a.525.525 0 0 0 .393.288l4.052.575-2.906 2.77a.565.565 0 0 0-.163.506l.694 3.957-3.686-1.894a.503.503 0 0 0-.461 0z"/>
+                        </svg>
+                        <div class="ms-3">
+                            {% if book in fav %}
+                                <h4>Удалить из избранного</h4>
+                            {% else %}
+                                <h4>Добавить в избранное</h4>
+                            {% endif %}
+                        </div>
+                    </button>
+                    <div class="me-5">
+                        <p>({{ book.favorite_users.count }} - столько человек добавили в избранное)</p>
+                    </div>
+                {% endwith %}
+            </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="mb-5">{{ title }}</h1>
+    {% for author in authors %}
+        <div class="bg-light border-dark border rounded-1 p-3 m-3">
+            <div class="d-flex justify-content-between">
+                <a href="{{ author.get_absolute_url }}" class="text-decoration-none">
+                    <h4 class="field-name">{{ author.name }}</h4>
+                </a>
+            </div>
+            <p class="field-name">{{ author.description|truncatewords:50 }}</p>
+        </div>
+    {% endfor %}
+{% endblock %}

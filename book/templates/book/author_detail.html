@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <h1 class="mb-5">{{ title }}</h1>
+    <div class="bg-light border-dark border rounded-1 p-3 m-3">
+        <div class="d-flex justify-content-between">
+            <div class="m-1 me-3 pe-3 border-end border-black" style="flex: none">
+                <div class="m-1">
+                    <p class="h5">Дата рождения:</p>
+                    <p class="text-danger h5">{{ author.date_of_birth }}</p>
+                </div>
+                {% if author.date_of_death %}
+                    <div class="m-1">
+                        <p class="h5">Дата смерти:</p>
+                        <p class="text-danger h5">{{ author.date_of_birth }}</p>
+                    </div>
+                {% endif %}
+            </div>
+            <p class="fs-5">{{ author.description }}</p>
+        </div>
+    </div>
+{% endblock %}
