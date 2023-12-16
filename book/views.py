@@ -33,11 +33,11 @@ class BookListView(DataMixin, ListView):
     title_page = 'Каталог книг'
 
     def get_ordering(self):
-        return self.request.GET.get('orderby')
+        return self.request.GET.get('orderby') or 'title'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        return self.get_mixin_context(context, sort_list=sort_list)
+        return self.get_mixin_context(context, sort_list=sort_list, current_orderby=self.get_ordering())
 
 
 class BookDetailView(DataMixin, DetailView):

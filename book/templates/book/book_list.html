@@ -11,7 +11,7 @@
                     <p>{{ sort.list }}</p>
                     <div class="me-4">
                         <a class="text-decoration-none p-3 border border-black rounded-1"
-                           href="?orderby={{ sort.value }}">{{ sort.name }}</a>
+                           href="?page=1&orderby={{ sort.value }}">{{ sort.name }}</a>
                     </div>
                 {% endfor %}
             {% endif %}
@@ -38,5 +38,48 @@
     {% endfor %}
     {% if favorite and not user.profile.favorite_books.count %}
         <h5>Вы пока не добавили ни одной книги в избранное :(</h5>
+    {% endif %}
+{% endblock %}
+
+{% block pagination %}
+    {% if page_obj.has_other_pages %}
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                {% if page_obj.number != 1 %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page=1&orderby={{ current_orderby }}">&lt;&lt;</a>
+                    </li>
+                {% endif %}
+
+                {% if page_obj.has_previous %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ page_obj.previous_page_number }}&orderby={{ current_orderby }}">&lt;</a>
+                    </li>
+                {% endif %}
+
+                {% for p in page_obj.paginator.page_range %}
+                    {% if page_obj.number == p %}
+                        <li class="page-item active"><a class="page-link"
+                                                        href="?page={{ p }}&orderby={{ current_orderby }}">{{ p }}</a>
+                        </li>
+                    {% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}
+                        <li class="page-item"><a class="page-link"
+                                                 href="?page={{ p }}&orderby={{ current_orderby }}">{{ p }}</a></li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ page_obj.next_page_number }}&orderby={{ current_orderby }}">&gt;</a>
+                    </li>
+                {% endif %}
+
+                {% if page_obj.number != page_obj.paginator.num_pages %}
+                    <li class="page-item"><a class="page-link"
+                                             href="?page={{ page_obj.paginator.num_pages }}&orderby={{ current_orderby }}">&gt;&gt;</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
     {% endif %}
 {% endblock %}
